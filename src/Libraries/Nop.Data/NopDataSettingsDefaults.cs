@@ -15,10 +15,19 @@
         /// </summary>
         public static string FilePath => "~/App_Data/dataSettings.json";
 
-
         /// <summary>
         /// Gets the name of an environment variable with connection string settings
         /// </summary>
-        public static string EnvironmentVariableName => "nop_datasettings";
+        public static string EnvironmentVariableDataConnectionString => "dataSettings__DataConnectionString";
+
+        /// <summary>
+        /// Gets the name of an environment variable with data provider settings
+        /// </summary>
+        public static string EnvironmentVariableDataProvider => "dataSettings__DataProvider";
+
+        /// <summary>
+        /// Gets the name of an environment variable with SQL command timеimeout settings
+        /// </summary>
+        public static string EnvironmentVariableSQLCommandTimeout => "dataSettings__SQLCommandTimeout";
     }
 }

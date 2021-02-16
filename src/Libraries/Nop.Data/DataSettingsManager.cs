@@ -77,41 +77,52 @@ namespace Nop.Data
             if (!reloadSettings && Singleton<DataSettings>.Instance != null)
                 return Singleton<DataSettings>.Instance;
 
-            var connectionString = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableName);
-            if (connectionString == null)
+            fileProvider ??= CommonHelper.DefaultFileProvider;
+            filePath ??= fileProvider.MapPath(NopDataSettingsDefaults.FilePath);
+
+            //check whether file exists
+            if (!fileProvider.FileExists(filePath))
             {
-                fileProvider ??= CommonHelper.DefaultFileProvider;
-                filePath ??= fileProvider.MapPath(NopDataSettingsDefaults.FilePath);
-
-                //check whether file exists
+                //if not, try to parse the file that was used in previous nopCommerce versions
+                filePath = fileProvider.MapPath(NopDataSettingsDefaults.ObsoleteFilePath);
                 if (!fileProvider.FileExists(filePath))
-                {
-                    //if not, try to parse the file that was used in previous nopCommerce versions
-                    filePath = fileProvider.MapPath(NopDataSettingsDefaults.ObsoleteFilePath);
-                    if (!fileProvider.FileExists(filePath))
-                        return new DataSettings();
-
-                    //get data settings from the old txt file
-                    var dataSettings =
-                        LoadDataSettingsFromOldFile(await fileProvider.ReadAllTextAsync(filePath, Encoding.UTF8));
-
-                    //save data settings to the new file
-                    await SaveSettingsAsync(dataSettings, fileProvider);
-
-                    //and delete the old one
-                    fileProvider.DeleteFile(filePath);
-
-                    Singleton<DataSettings>.Instance = dataSettings;
-                    return Singleton<DataSettings>.Instance;
-                }
-
-                connectionString = await fileProvider.ReadAllTextAsync(filePath, Encoding.UTF8);
-                if (string.IsNullOrEmpty(connectionString))
                     return new DataSettings();
+
+                //get data settings from the old txt file
+                var dataSettings_old =
+                    LoadDataSettingsFromOldFile(await fileProvider.ReadAllTextAsync(filePath, Encoding.UTF8));
+
+                //save data settings to the new file
+                await SaveSettingsAsync(dataSettings_old, fileProvider);
+
+                //and delete the old one
+                fileProvider.DeleteFile(filePath);
+
+                Singleton<DataSettings>.Instance = dataSettings_old;
+                return Singleton<DataSettings>.Instance;
             }
 
+            var text = await fileProvider.ReadAllTextAsync(filePath, Encoding.UTF8);
+            if (string.IsNullOrEmpty(text))
+                return new DataSettings();
+
             //get data settings from the JSON file
-            Singleton<DataSettings>.Instance = JsonConvert.DeserializeObject<DataSettings>(connectionString);
+            var dataSettings = JsonConvert.DeserializeObject<DataSettings>(text);
+
+            var dataConnectionString = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableDataConnectionString);
+            var dataProvider = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableDataProvider);
+            var sqlCommandTimeout = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableSQLCommandTimeout);
+
+            if (!string.IsNullOrEmpty(dataConnectionString))
+                dataSettings.ConnectionString = dataConnectionString;
+
+            if (!string.IsNullOrEmpty(dataProvider))
+                dataSettings.DataProvider = JsonConvert.DeserializeObject<DataProviderType>(dataProvider);
+
+            if (!string.IsNullOrEmpty(sqlCommandTimeout) && int.TryParse(sqlCommandTimeout, out var sqlTimeOut))
+                dataSettings.SQLCommandTimeout = sqlTimeOut;
+
+            Singleton<DataSettings>.Instance = dataSettings;
 
             return Singleton<DataSettings>.Instance;
         }
@@ -128,40 +139,51 @@ namespace Nop.Data
             if (!reloadSettings && Singleton<DataSettings>.Instance != null)
                 return Singleton<DataSettings>.Instance;
 
-            var connectionString = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableName);
-            if (connectionString == null)
+            fileProvider ??= CommonHelper.DefaultFileProvider;
+            filePath ??= fileProvider.MapPath(NopDataSettingsDefaults.FilePath);
+
+            //check whether file exists
+            if (!fileProvider.FileExists(filePath))
             {
-                fileProvider ??= CommonHelper.DefaultFileProvider;
-                filePath ??= fileProvider.MapPath(NopDataSettingsDefaults.FilePath);
-
-                //check whether file exists
+                //if not, try to parse the file that was used in previous nopCommerce versions
+                filePath = fileProvider.MapPath(NopDataSettingsDefaults.ObsoleteFilePath);
                 if (!fileProvider.FileExists(filePath))
-                {
-                    //if not, try to parse the file that was used in previous nopCommerce versions
-                    filePath = fileProvider.MapPath(NopDataSettingsDefaults.ObsoleteFilePath);
-                    if (!fileProvider.FileExists(filePath))
-                        return new DataSettings();
-
-                    //get data settings from the old txt file
-                    var dataSettings = LoadDataSettingsFromOldFile(fileProvider.ReadAllText(filePath, Encoding.UTF8));
-
-                    //save data settings to the new file
-                    SaveSettings(dataSettings, fileProvider);
-
-                    //and delete the old one
-                    fileProvider.DeleteFile(filePath);
-
-                    Singleton<DataSettings>.Instance = dataSettings;
-                    return Singleton<DataSettings>.Instance;
-                }
-
-                connectionString = fileProvider.ReadAllText(filePath, Encoding.UTF8);
-                if (string.IsNullOrEmpty(connectionString))
                     return new DataSettings();
+
+                //get data settings from the old txt file
+                var dataSettings_old = LoadDataSettingsFromOldFile(fileProvider.ReadAllText(filePath, Encoding.UTF8));
+
+                //save data settings to the new file
+                SaveSettings(dataSettings_old, fileProvider);
+
+                //and delete the old one
+                fileProvider.DeleteFile(filePath);
+
+                Singleton<DataSettings>.Instance = dataSettings_old;
+                return Singleton<DataSettings>.Instance;
             }
 
+            var text = fileProvider.ReadAllText(filePath, Encoding.UTF8);
+            if (string.IsNullOrEmpty(text))
+                return new DataSettings();
+
             //get data settings from the JSON file
-            Singleton<DataSettings>.Instance = JsonConvert.DeserializeObject<DataSettings>(connectionString);
+            var dataSettings = JsonConvert.DeserializeObject<DataSettings>(text);
+
+            var dataConnectionString = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableDataConnectionString);
+            var dataProvider = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableDataProvider);
+            var sqlCommandTimeout = Environment.GetEnvironmentVariable(NopDataSettingsDefaults.EnvironmentVariableSQLCommandTimeout);
+
+            if (!string.IsNullOrEmpty(dataConnectionString))
+                dataSettings.ConnectionString = dataConnectionString;
+
+            if (!string.IsNullOrEmpty(dataProvider))
+                dataSettings.DataProvider = JsonConvert.DeserializeObject<DataProviderType>(dataProvider);
+
+            if (!string.IsNullOrEmpty(sqlCommandTimeout) && int.TryParse(sqlCommandTimeout, out var sqlTimeOut))
+                dataSettings.SQLCommandTimeout = sqlTimeOut;
+
+            Singleton<DataSettings>.Instance = dataSettings;
 
             return Singleton<DataSettings>.Instance;
         }

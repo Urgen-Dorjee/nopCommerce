@@ -166,8 +166,7 @@ namespace Nop.Web.Infrastructure
                 new { controller = "BackInStockSubscription", action = "SubscribePopupPOST" });
 
             //downloads
-            endpointRouteBuilder.MapControllerRoute("GetSampleDownload",
-                pattern + "download/sample/{productid:min(0)}",
+            endpointRouteBuilder.MapControllerRoute("GetSampleDownload", "download/sample/{productid:min(0)}",
                 new { controller = "Download", action = "Sample" });
 
             //checkout pages
@@ -258,7 +257,7 @@ namespace Nop.Web.Infrastructure
                 new { controller = "News", action = "ListRss" });
 
             //set review helpfulness (AJAX link)
-            endpointRouteBuilder.MapControllerRoute("SetProductReviewHelpfulness", $"{pattern}setproductreviewhelpfulness",
+            endpointRouteBuilder.MapControllerRoute("SetProductReviewHelpfulness", "setproductreviewhelpfulness",
                 new { controller = "Product", action = "SetProductReviewHelpfulness" });
 
             //customer account links
@@ -340,20 +339,16 @@ namespace Nop.Web.Infrastructure
                 new { controller = "Order", action = "PrintOrderDetails" });
 
             //order downloads
-            endpointRouteBuilder.MapControllerRoute("GetDownload",
-                pattern + "download/getdownload/{orderItemId:guid}/{agree?}",
+            endpointRouteBuilder.MapControllerRoute("GetDownload", "download/getdownload/{orderItemId:guid}/{agree?}",
                 new { controller = "Download", action = "GetDownload" });
 
-            endpointRouteBuilder.MapControllerRoute("GetLicense",
-                pattern + "download/getlicense/{orderItemId:guid}/",
+            endpointRouteBuilder.MapControllerRoute("GetLicense", "download/getlicense/{orderItemId:guid}/",
                 new { controller = "Download", action = "GetLicense" });
 
-            endpointRouteBuilder.MapControllerRoute("DownloadUserAgreement",
-                pattern + "customer/useragreement/{orderItemId:guid}",
+            endpointRouteBuilder.MapControllerRoute("DownloadUserAgreement", "customer/useragreement/{orderItemId:guid}",
                 new { controller = "Customer", action = "UserAgreement" });
 
-            endpointRouteBuilder.MapControllerRoute("GetOrderNoteFile",
-                pattern + "download/ordernotefile/{ordernoteid:min(0)}",
+            endpointRouteBuilder.MapControllerRoute("GetOrderNoteFile", "download/ordernotefile/{ordernoteid:min(0)}",
                 new { controller = "Download", action = "GetOrderNoteFile" });
 
             //contact vendor
@@ -398,11 +393,11 @@ namespace Nop.Web.Infrastructure
                 new { controller = "Product", action = "NewProductsRss" });
 
             //get state list by country ID  (AJAX link)
-            endpointRouteBuilder.MapControllerRoute("GetStatesByCountryId", $"{pattern}country/getstatesbycountryid/",
+            endpointRouteBuilder.MapControllerRoute("GetStatesByCountryId", "country/getstatesbycountryid/",
                 new { controller = "Country", action = "GetStatesByCountryId" });
 
             //EU Cookie law accept button handler (AJAX link)
-            endpointRouteBuilder.MapControllerRoute("EuCookieLawAccept", $"{pattern}eucookielawaccept",
+            endpointRouteBuilder.MapControllerRoute("EuCookieLawAccept", "eucookielawaccept",
                 new { controller = "Common", action = "EuCookieLawAccept" });
 
             //authenticate topic AJAX link
@@ -545,7 +540,7 @@ namespace Nop.Web.Infrastructure
                 new { controller = "Newsletter", action = "SubscriptionActivation" });
 
             //robots.txt
-            endpointRouteBuilder.MapControllerRoute("robots.txt", $"{pattern}robots.txt",
+            endpointRouteBuilder.MapControllerRoute("robots.txt", "robots.txt",
                 new { controller = "Common", action = "RobotsTextFile" });
 
             //sitemap
@@ -563,7 +558,7 @@ namespace Nop.Web.Infrastructure
                 new { controller = "Common", action = "StoreClosed" });
 
             //install
-            endpointRouteBuilder.MapControllerRoute("Installation", $"{pattern}{NopInstallationDefaults.InstallPath}",
+            endpointRouteBuilder.MapControllerRoute("Installation", $"{NopInstallationDefaults.InstallPath}",
                 new { controller = "Install", action = "Index" });
 
             //error page

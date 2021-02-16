@@ -477,6 +477,8 @@ namespace Nop.Web.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
+        //ignore SEO friendly URLs checks
+        [CheckLanguageSeoCode(true)]
         public virtual async Task<IActionResult> SetProductReviewHelpfulness(int productReviewId, bool washelpful)
         {
             var productReview = await _productService.GetProductReviewByIdAsync(productReviewId);

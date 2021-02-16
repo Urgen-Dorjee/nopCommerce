@@ -316,8 +316,6 @@ namespace Nop.Web.Controllers
         [CheckAccessClosedStore(true)]
         //available even when navigation is not allowed
         [CheckAccessPublicStore(true)]
-        //ignore SEO friendly URLs checks
-        [CheckLanguageSeoCode(true)]
         public virtual async Task<IActionResult> EuCookieLawAccept()
         {
             if (!_storeInformationSettings.DisplayEuCookieLawWarning)

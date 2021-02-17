@@ -49,4 +49,29 @@
             </nop-cards>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            checkEnvironmentVariables();
+        });
+
+        function checkEnvironmentVariables() {
+            var elem = "<span class='field-validation-custom warning'>@T("Admin.Configuration.AppSettings.EnvironmentVariablesWarning")</span>";
+            @foreach (var ev in Model.EnvironmentVariables)
+            {
+                if (ev.StartsWith(nameof(Model.CacheConfigModel)))
+                {
+                    //because kendo fields have a original structure of elements, we are forced to add a warning for them in a special way
+                    <text> 
+                    $('#@ev').parent().parent().after(elem);
+                    </text>
+                }
+                else
+                {
+                    <text> 
+                    $('#@ev').after(elem);
+                    </text>
+                }
+            }
+        }
+    </script>
 </form>

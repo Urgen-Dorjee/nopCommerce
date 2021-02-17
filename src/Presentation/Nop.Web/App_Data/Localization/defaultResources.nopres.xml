@@ -11292,6 +11292,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Fields.LastVisitedPage.Hint">
     <Value>The last visited date (public store).</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MultiFactorAuthenticationProvider">
+    <Value>Multi-factor authentication provider</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MultiFactorAuthenticationProvider.Hint">
+    <Value>Name of the multi-factor authentication provider to which the customer is bound.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.Newsletter">
     <Value>Newsletter</Value>
   </LocaleResource>

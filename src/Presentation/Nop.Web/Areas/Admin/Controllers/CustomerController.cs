@@ -852,6 +852,22 @@ namespace Nop.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public virtual async Task<IActionResult> RemoveBindMFA(int id)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageCustomers))
+                return AccessDeniedView();
+
+            //try to get a customer with the specified id
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+            if (customer == null)
+                return RedirectToAction("List");
+
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedMultiFactorAuthenticationProviderAttribute, string.Empty);
+
+            return RedirectToAction("Edit", new { id = customer.Id });
+        }
+
+        [HttpPost]
         public virtual async Task<IActionResult> Delete(int id)
         {
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageCustomers))
